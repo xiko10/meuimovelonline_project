@@ -1,0 +1,37 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Painel - Meu Imóvel Online{% endblock %}</title>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>Meu Imóvel Online - Área Restrita</h1>
+        <nav>
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit">Sair</button>
+                </form>
+            {% endif %}
+        </nav>
+    </header>
+    <hr>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <hr>
+    <footer>
+        <p>&copy; 2025 Meu Imóvel Online. Todos os direitos reservados.</p>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

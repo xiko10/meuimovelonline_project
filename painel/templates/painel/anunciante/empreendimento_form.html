@@ -1,0 +1,67 @@
+{% extends "painel/base_painel.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Cadastrar Empreendimento - Etapa {{ step }}{% endblock %}
+
+{% block extra_head %}
+    {% endblock %}
+
+{% block content %}
+    <h2>Cadastrar Novo Empreendimento - Etapa {{ step }} de 8</h2>
+    
+    {% if step == 'Inicial' %}
+        <p>Passo Inicial: Informações básicas sobre o Empreendimento e o Anunciante.</p>
+    {% elif step == 3 %}
+        <p>Passo 3: Localização e Contato.</p>
+    {% elif step == 4 %}
+        <p>Passo 4: Mídias e Documentos. Adicione imagens, vídeos e os documentos do seu empreendimento.</p>
+    {% endif %}
+
+    <hr>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% if form %}
+            <p><strong>Campos do Formulário:</strong></p>
+            {{ form.as_p }}
+        {% endif %}
+
+        {% if step == 4 %}
+            <h3>Imagens da Galeria</h3>
+            {{ formsets.imagens.management_form }}
+            {% for form in formsets.imagens %}
+                <div class="formset-item">{{ form.as_p }}</div><hr>
+            {% endfor %}
+
+            <h3>Vídeos</h3>
+            {{ formsets.videos.management_form }}
+            {% for form in formsets.videos %}
+                <div class="formset-item">{{ form.as_p }}</div><hr>
+            {% endfor %}
+
+            <h3>Documentos</h3>
+            {{ formsets.documentos.management_form }}
+            {% for form in formsets.documentos %}
+                <div class.="formset-item">{{ form.as_p }}</div><hr>
+            {% endfor %}
+        {% endif %}
+        
+        <br>
+        <button type="submit">Avançar para a Próxima Etapa</button>
+    </form>
+{% endblock %}
+
+
+{% block extra_scripts %}
+    <script src="{% static 'painel/js/formset.js' %}"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // No futuro, aqui chamaremos as funções do formset.js
+            // para adicionar os botões de "Adicionar mais".
+            console.log('Página do formulário de empreendimento carregada.');
+        });
+    </script>
+{% endblock %}
