@@ -1,0 +1,34 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Meus Leads{% endblock %}
+{% block content %}
+    <h2>Meus Leads</h2>
+    <p>Acompanhe aqui todos os leads que foram atribuídos a você.</p>
+    <table border="1" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Contato</th>
+                <th>Unidade de Interesse</th>
+                <th>Status</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lead in leads %}
+                <tr>
+                    <td>{{ lead.id }}</td>
+                    <td>{{ lead.nome_cliente }}</td>
+                    <td>{{ lead.whatsapp_cliente }}</td>
+                    <td>{{ lead.unidade_interesse }}</td>
+                    <td>{{ lead.get_status_display }}</td>
+                    <td>{{ lead.data_criacao|date:"d/m/Y H:i" }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">Nenhum lead atribuído a você no momento.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

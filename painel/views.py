@@ -21,6 +21,8 @@ from empreendimentos.forms import (
     FluxoPagamentoFormSet
 )
 from empreendimentos.models import Empreendimento
+from reservas.models import Lead, Reserva # Importe os modelos necessários
+
 
 # -----------------------------------------------------------------------------
 # VIEW DE REDIRECIONAMENTO PRINCIPAL (permanece igual)
@@ -49,7 +51,7 @@ def admin_dashboard(request):
 @login_required
 @user_passes_test(is_anunciante_ou_superadmin)
 def anunciante_dashboard(request):
-    return HttpResponse("Painel do Anunciante em construção.")
+        return render(request, 'painel/anunciante/anunciante_dashboard.html')
 
 @login_required
 @user_passes_test(is_admin_imob)
@@ -64,7 +66,7 @@ def gerente_dashboard(request):
 @login_required
 @user_passes_test(is_corretor)
 def corretor_dashboard(request):
-    return HttpResponse("Painel do Corretor em construção.")
+    return render(request, 'painel/corretor/corretor_dashboard.html')
 
 # -----------------------------------------------------------------------------
 # VIEWS DO ASSISTENTE DE CRIAÇÃO (COM A REFERÊNCIA AO FORMULÁRIO CORRIGIDA)
@@ -170,3 +172,51 @@ def anunciante_empreendimento_update(request, pk, step):
         'empreendimento': empreendimento,
     }
     return render(request, 'painel/anunciante/empreendimento_form.html', context)
+
+
+@login_required
+@user_passes_test(is_anunciante_ou_superadmin)
+def anunciante_lead_list(request):
+    # Filtra os leads para mostrar apenas aqueles dos empreendimentos do anunciante logado
+    leads = Lead.objects.filter(unidade_interesse__empreendimento__anunciante_responsavel=request.user).order_by('-data_criacao')
+    context = {
+        'leads': leads
+    }
+    return render(request, 'painel/anunciante/anunciante_lead_list.html', context)
+
+@login_required
+@user_passes_test(is_anunciante_ou_superadmin)
+def anunciante_reserva_list(request):
+    # Filtra as reservas para mostrar apenas aquelas dos empreendimentos do anunciante logado
+    reservas = Reserva.objects.filter(unidade__empreendimento__anunciante_responsavel=request.user).order_by('-data_atualizacao')
+    context = {
+        'reservas': reservas
+    }
+    return render(request, 'painel/anunciante/anunciante_reserva_list.html', context)
+
+
+@login_required
+@user_passes_test(is_corretor)
+def corretor_lead_list(request):
+    # Mostra leads que foram gerados pelo corretor ou atribuídos a ele
+    leads = Lead.objects.filter(corretor_atribuido=request.user).order_by('-data_criacao')
+    context = {'leads': leads}
+    return render(request, 'painel/corretor/corretor_lead_list.html', context)
+
+@login_required
+@user_passes_test(is_corretor)
+def corretor_reserva_list(request):
+    # Mostra apenas as reservas realizadas pelo corretor logado
+    reservas = Reserva.objects.filter(corretor=request.user).order_by('-data_atualizacao')
+    context = {'reservas': reservas}
+    return render(request, 'painel/corretor/corretor_reserva_list.html', context)
+
+
+@login_required
+@user_passes_test(is_anunciante_ou_superadmin)
+def anunciante_reserva_detail(request, pk):
+    reserva = get_object_or_404(Reserva, pk=pk, unidade__empreendimento__anunciante_responsavel=request.user)
+    context = {
+        'reserva': reserva
+    }
+    return render(request, 'painel/anunciante/anunciante_reserva_detail.html', context)

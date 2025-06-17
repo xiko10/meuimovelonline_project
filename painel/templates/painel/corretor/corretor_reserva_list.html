@@ -1,0 +1,32 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Minhas Reservas{% endblock %}
+{% block content %}
+    <h2>Minhas Reservas</h2>
+    <p>Acompanhe aqui todas as reservas que você realizou.</p>
+    <table border="1" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Unidade</th>
+                <th>Cliente</th>
+                <th>Status</th>
+                <th>Última Atualização</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+                <tr>
+                    <td>{{ reserva.id }}</td>
+                    <td>{{ reserva.unidade }}</td>
+                    <td>{{ reserva.cliente.get_full_name }}</td>
+                    <td>{{ reserva.get_status_display }}</td>
+                    <td>{{ reserva.data_atualizacao|date:"d/m/Y H:i" }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">Você ainda não realizou nenhuma reserva.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

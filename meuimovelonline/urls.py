@@ -6,10 +6,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     # Rota do admin nativo
     path('superadmin/', admin.site.urls), 
-    
-    # ADICIONE/MODIFIQUE ESTA LINHA para incluir as rotas do painel
     path('painel/', include('painel.urls')),
-    
+    path('empreendimentos/', include('empreendimentos.urls', namespace='empreendimentos')),
+    path('reservas/', include('reservas.urls', namespace='reservas')),
+
     # Rota principal que inclui as urls do app 'core' (home, login, etc.)
     path('', include('core.urls')),
 ]

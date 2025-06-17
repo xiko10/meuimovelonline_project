@@ -1,0 +1,52 @@
+<h1>{{ empreendimento.nome }}</h1>
+<p><strong>Status:</strong> {{ empreendimento.get_status_empreendimento_display }}</p>
+
+{% if messages %}
+    <ul class="messages" style="background-color: lightgreen; padding: 10px;">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<hr>
+<h3>Unidades</h3>
+{% for unidade in empreendimento.unidades.all %}
+    <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+        <p>
+            <strong>Tipo:</strong> {{ unidade.get_tipo_display }} | 
+            <strong>Metragem:</strong> {{ unidade.metragem }}m² |
+            <strong>Status:</strong> {{ unidade.get_status_display }}
+        </p>
+        
+        {% if unidade.status == 'disponivel' %}
+            
+            {% if user.is_authenticated and user.perfil == 'corretor' %}
+                <form action="{% url 'reservas:reserva_direta_corretor' unidade.id %}" method="post">
+                    {% csrf_token %}
+                    <p><strong>Realizar Reserva Direta para Cliente:</strong></p>
+                    <input type="text" name="nome_cliente" placeholder="Nome completo do cliente" required>
+                    <input type="text" name="cpf_cliente" placeholder="CPF do cliente" required>
+                    <input type="email" name="email_cliente" placeholder="E-mail do cliente" required>
+                    <input type="text" name="whatsapp_cliente" placeholder="WhatsApp do cliente" required>
+                    <button type="submit">Reservar Unidade</button>
+                </form>
+            {% else %}
+                <form action="{% url 'reservas:solicitar_reserva' unidade.id %}" method="post">
+                    {% csrf_token %}
+                    <p><strong>Tenho Interesse!</strong></p>
+                    <input type="text" name="nome_cliente" placeholder="Seu nome completo" required>
+                    <input type="text" name="whatsapp_cliente" placeholder="Seu WhatsApp" required>
+                    <input type="email" name="email_cliente" placeholder="Seu e-mail">
+                    <input type="text" name="cpf_cliente" placeholder="Seu CPF (opcional)">
+                    <button type="submit">Enviar Solicitação</button>
+                </form>
+            {% endif %}
+
+        {% else %}
+            <p><em>Esta unidade não está disponível para reserva.</em></p>
+        {% endif %}
+    </div>
+{% empty %}
+    <p>Nenhuma unidade cadastrada para este empreendimento.</p>
+{% endfor %}

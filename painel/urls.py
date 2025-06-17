@@ -16,6 +16,9 @@ urlpatterns = [
         path('', views.anunciante_dashboard, name='anunciante_dashboard'),
         path('empreendimentos/novo/', views.anunciante_empreendimento_create, name='anunciante_empreendimento_create'),
         path('empreendimentos/<int:pk>/editar/etapa<int:step>/', views.anunciante_empreendimento_update, name='anunciante_empreendimento_update'),
+        path('leads/', views.anunciante_lead_list, name='anunciante_lead_list'),
+        path('reservas/', views.anunciante_reserva_list, name='anunciante_reserva_list'),
+        path('reservas/<int:pk>/', views.anunciante_reserva_detail, name='anunciante_reserva_detail'),
     ])),
 
     # --- ROTAS DO ADMIN DE IMOBILIÁRIA ---
@@ -31,6 +34,8 @@ urlpatterns = [
     # --- ROTAS DO CORRETOR ---
     path('corretor/', include([
         path('', views.corretor_dashboard, name='corretor_dashboard'),
+        path('leads/', views.corretor_lead_list, name='corretor_lead_list'),
+        path('reservas/', views.corretor_reserva_list, name='corretor_reserva_list'),
     ])),
 
     # --- ROTAS DO CLIENTE ---

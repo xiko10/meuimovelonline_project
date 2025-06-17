@@ -1,0 +1,10 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Dashboard do Corretor{% endblock %}
+{% block content %}
+    <h2>Painel do Corretor</h2>
+    <p>Bem-vindo, {{ user.get_full_name }}.</p>
+    <ul class="dashboard-list">
+        <li><a href="{% url 'corretor_reserva_list' %}">Gerenciar Minhas Reservas</a></li>
+        <li><a href="{% url 'corretor_lead_list' %}">Gerenciar Meus Leads</a></li>
+    </ul>
+{% endblock %}

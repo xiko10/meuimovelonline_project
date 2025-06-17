@@ -1,0 +1,17 @@
+<h1>Lista de Empreendimentos</h1>
+<hr>
+{% if empreendimentos %}
+    {% for emp in empreendimentos %}
+        <div style="border: 1px solid black; margin: 10px; padding: 10px;">
+            <h2>
+                <a href="{% url 'empreendimentos:detail' emp.slug %}">
+                    {{ emp.nome }}
+                </a>
+            </h2>
+            <p>{{ emp.descricao_curta }}</p>
+            <p><strong>Status:</strong> {{ emp.get_status_empreendimento_display }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Nenhum empreendimento publicado no momento.</p>
+{% endif %}

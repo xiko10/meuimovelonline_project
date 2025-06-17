@@ -1,0 +1,16 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Detalhes da Reserva #{{ reserva.id }}{% endblock %}
+{% block content %}
+    <h2>Detalhes da Reserva #{{ reserva.id }}</h2>
+    <ul>
+        <li><strong>Empreendimento:</strong> {{ reserva.unidade.empreendimento.nome }}</li>
+        <li><strong>Unidade:</strong> {{ reserva.unidade }}</li>
+        <li><strong>Cliente:</strong> {{ reserva.cliente.get_full_name }} ({{ reserva.cliente.email }})</li>
+        <li><strong>Corretor:</strong> {{ reserva.corretor.get_full_name|default:"-" }}</li>
+        <li><strong>Status Atual:</strong> {{ reserva.get_status_display }}</li>
+        <li><strong>Data da Reserva:</strong> {{ reserva.data_criacao|date:"d/m/Y H:i" }}</li>
+    </ul>
+    <hr>
+    <h3>Ações</h3>
+    <p>Botões para aprovar documentos, alterar status, etc., virão aqui.</p>
+{% endblock %}

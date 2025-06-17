@@ -1,0 +1,39 @@
+/* static/css/painel_estilos.css */
+
+/* Estilos para Tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f4f8; /* Usando nosso cinza claro dos tokens de design */
+    font-weight: 600;
+}
+
+/* Estilos para Listas (como nos dashboards) */
+.dashboard-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.dashboard-list li {
+    margin: 10px 0;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #2de187; /* Usando nossa cor secundária */
+}
+
+.dashboard-list li a {
+    text-decoration: none;
+    color: #004132; /* Usando nosso verde escuro para texto */
+    font-weight: 500;
+}

@@ -1,0 +1,35 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Minhas Reservas{% endblock %}
+{% block content %}
+    <h2>Gestão de Reservas</h2>
+    <p>Acompanhe aqui todas as reservas realizadas em seus empreendimentos.</p>
+    <table border="1" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Unidade</th>
+                <th>Cliente</th>
+                <th>Corretor</th>
+                <th>Status</th>
+                <th>Última Atualização</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+                <tr>
+                    <td>{{ reserva.id }}</td>
+                    <td>{{ reserva.unidade }}</td>
+                    <td>{{ reserva.cliente.get_full_name }}</td>
+                    <td>{{ reserva.corretor.get_full_name|default:"-" }}</td>
+                    <td>{{ reserva.get_status_display }}</td>
+                    <td>{{ reserva.data_atualizacao|date:"d/m/Y H:i" }}</td>
+                    <td><a href="{% url 'anunciante_reserva_detail' reserva.id %}">{{ reserva.id }}</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">Nenhuma reserva encontrada para seus empreendimentos.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
