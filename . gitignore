@@ -1,0 +1,67 @@
+# Arquivo .gitignore definitivo.
+# Este arquivo instrui o Git sobre quais arquivos e pastas ignorar no versionamento.
+
+### Ambientes Virtuais e Variáveis de Ambiente (CRUCIAL PARA SEGURANÇA) ###
+# Nunca comissionar ambientes virtuais ou arquivos com senhas e chaves de API.
+venv/
+.env
+
+### Configurações Locais (CRUCIAL PARA SEGURANÇA) ###
+# Permite que cada desenvolvedor tenha configurações locais (ex: debug=True) sem afetar a produção.
+local_settings.py
+.env.local
+.env.*.local
+
+### Arquivos de Banco de Dados Locais ###
+# Previne que o banco de dados de teste local seja enviado para o repositório.
+db.sqlite3
+db.sqlite3-journal
+
+### Arquivos Gerados pelo Django ###
+# A pasta 'staticfiles' é gerada pelo comando `collectstatic`. Não é código-fonte.
+staticfiles/
+# A pasta 'media' armazena uploads de usuários. NUNCA deve ser versionada.
+media/
+
+### Arquivos Compilados e Logs do Python ###
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.log
+*.pot
+*.pyc
+
+### Arquivos de Configuração de IDEs e Editores ###
+# Evita conflitos de configuração pessoal entre desenvolvedores.
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+### Arquivos Gerados pelo Sistema Operacional ###
+.DS_Store
+Thumbs.db
+
+### Arquivos de Testes e Cobertura de Código ###
+htmlcov/
+.coverage
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+### Ferramentas de Gerenciamento de Pacotes ###
+Pipfile.lock
+poetry.lock
+
+# --- NOTA SOBRE MIGRACTIONS ---
+# O versionamento dos arquivos de migração (0001_initial.py, etc.) é ESSENCIAL
+# para o trabalho em equipe e para a consistência do banco de dados entre
+# os ambientes de desenvolvimento, teste e produção.
+# NUNCA descomente a linha abaixo a menos que haja uma política de projeto específica.
+# */migrations/
