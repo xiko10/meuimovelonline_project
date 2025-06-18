@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Resumo da Reserva #{{ reserva.id }}</title>
+    <style>
+        @page {
+            size: a4 portrait;
+            @frame {
+                -pdf-frame-content: footer-content;
+                bottom: 1cm;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                height: 1cm;
+            }
+        }
+        body { font-family: "Helvetica", "sans-serif"; color: #333; }
+        h1, h2 { color: #004132; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Resumo da Proposta de Reserva #{{ reserva.id }}</h1>
+    <p>Data de emissão: {% now "d/m/Y H:i" %}</p>
+    <hr>
+
+    <h2>Detalhes do Empreendimento</h2>
+    <table>
+        <tr><th>Empreendimento</th><td>{{ reserva.unidade.empreendimento.nome }}</td></tr>
+        <tr><th>Unidade</th><td>{{ reserva.unidade }}</td></tr>
+    </table>
+
+    <h2>Detalhes do Cliente</h2>
+    <table>
+        <tr><th>Nome</th><td>{{ reserva.cliente.get_full_name }}</td></tr>
+        <tr><th>Email</th><td>{{ reserva.cliente.email }}</td></tr>
+    </table>
+
+    <h2>Detalhes da Negociação</h2>
+    <table>
+        <tr><th>Corretor Responsável</th><td>{{ reserva.corretor.get_full_name }}</td></tr>
+        <tr><th>Status da Reserva</th><td>{{ reserva.get_status_display }}</td></tr>
+        <tr><th>Valor da Unidade</th><td>R$ {{ reserva.unidade.valor_total }}</td></tr>
+    </table>
+
+    <div id="footer-content">
+        <p style="text-align: center; font-size: 10px;">Meu Imóvel Online - Documento gerado em {% now "d/m/Y" %}</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Gestão de Parcerias{% endblock %}
+
+{% block content %}
+    <h2>Gestão de Parcerias</h2>
+    
+    <hr>
+    <h3>Convites Pendentes</h3>
+    <table border="1" width="100%">
+        <thead>
+            <tr>
+                <th>Empreendimento</th>
+                <th>Anunciante</th>
+                <th>Data do Convite</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for parceria in convites_pendentes %}
+                <tr>
+                    <td>{{ parceria.empreendimento.nome }}</td>
+                    <td>{{ parceria.empreendimento.nome_anunciante }}</td>
+                    <td>{{ parceria.data_convite|date:"d/m/Y" }}</td>
+                    <td style="display: flex; gap: 10px;">
+                        <form action="{% url 'imobiliaria_responder_convite' parceria.id 'aceita' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" style="background-color: green; color: white;">Aceitar</button>
+                        </form>
+                        <form action="{% url 'imobiliaria_responder_convite' parceria.id 'recusada' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" style="background-color: red; color: white;">Recusar</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">Nenhum convite pendente no momento.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+    <h3>Parcerias Ativas</h3>
+    <table border="1" width="100%">
+        <thead>
+            <tr>
+                <th>Empreendimento</th>
+                <th>Anunciante</th>
+                <th>Parceria Firmada em</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for parceria in parcerias_ativas %}
+                <tr>
+                    <td>{{ parceria.empreendimento.nome }}</td>
+                    <td>{{ parceria.empreendimento.nome_anunciante }}</td>
+                    <td>{{ parceria.data_resposta|date:"d/m/Y" }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">Nenhuma parceria ativa no momento.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

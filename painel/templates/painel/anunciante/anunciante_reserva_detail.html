@@ -1,7 +1,10 @@
 {% extends "painel/base_painel.html" %}
+
 {% block title %}Detalhes da Reserva #{{ reserva.id }}{% endblock %}
+
 {% block content %}
     <h2>Detalhes da Reserva #{{ reserva.id }}</h2>
+    
     <ul>
         <li><strong>Empreendimento:</strong> {{ reserva.unidade.empreendimento.nome }}</li>
         <li><strong>Unidade:</strong> {{ reserva.unidade }}</li>
@@ -10,7 +13,64 @@
         <li><strong>Status Atual:</strong> {{ reserva.get_status_display }}</li>
         <li><strong>Data da Reserva:</strong> {{ reserva.data_criacao|date:"d/m/Y H:i" }}</li>
     </ul>
+
     <hr>
-    <h3>Ações</h3>
-    <p>Botões para aprovar documentos, alterar status, etc., virão aqui.</p>
+    <h3>Ações de Status</h3>
+    {% if reserva.status == 'aprovada' %}
+        <form action="{% url 'anunciante_alterar_status_reserva' pk=reserva.pk novo_status='docs_aguardando' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Solicitar Documentação</button>
+        </form>
+    {% elif reserva.status == 'docs_aguardando' %}
+        <form action="{% url 'anunciante_alterar_status_reserva' pk=reserva.pk novo_status='docs_aprovados' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Marcar Documentação como Aprovada</button>
+        </form>
+    {% elif reserva.status == 'docs_aprovados' %}
+        <form action="{% url 'anunciante_alterar_status_reserva' pk=reserva.pk novo_status='contrato_enviado' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Marcar Contrato como Enviado</button>
+        </form>
+    {% elif reserva.status == 'contrato_enviado' %}
+        <form action="{% url 'anunciante_alterar_status_reserva' pk=reserva.pk novo_status='contrato_recebido' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Marcar Contrato como Recebido/Assinado</button>
+        </form>
+    {% elif reserva.status == 'contrato_recebido' %}
+        <form action="{% url 'anunciante_alterar_status_reserva' pk=reserva.pk novo_status='venda_concluida' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" style="background-color: green; color: white;">MARCAR VENDA COMO CONCLUÍDA</button>
+        </form>
+    {% elif reserva.status == 'venda_concluida' %}
+        <p>Este processo de venda foi concluído com sucesso!</p>
+    {% endif %}
+
+    {% if reserva.status != 'venda_concluida' and reserva.status != 'cancelada' %}
+        <form action="{% url 'anunciante_alterar_status_reserva' pk=reserva.pk novo_status='cancelada' %}" method="post" style="margin-top: 20px;">
+            {% csrf_token %}
+            <button type="submit" style="background-color: red; color: white;">Cancelar Reserva</button>
+        </form>
+    {% endif %}
+    
+    <hr>
+    <h3>Documentos da Reserva</h3>
+    
+    <h4>Documentos Enviados</h4>
+    <ul>
+        {% for doc in documentos %}
+            <li>
+                <a href="{{ doc.arquivo.url }}" target="_blank">{{ doc.nome_documento }}</a> 
+                (Enviado em {{ doc.data_upload|date:"d/m/Y" }})
+            </li>
+        {% empty %}
+            <li>Nenhum documento enviado ainda.</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Enviar Novo Documento</h4>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ upload_form.as_p }}
+        <button type="submit">Enviar Documento</button>
+    </form>
 {% endblock %}

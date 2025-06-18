@@ -1,0 +1,30 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Detalhes do Lead #{{ lead.id }}{% endblock %}
+
+{% block content %}
+    <h2>Detalhes do Lead: {{ lead.nome_cliente }}</h2>
+    <ul>
+        <li><strong>Contato:</strong> {{ lead.whatsapp_cliente }} / {{ lead.email_cliente }}</li>
+        <li><strong>Interesse:</strong> {{ lead.unidade_interesse.empreendimento.nome }}</li>
+        <li><strong>Status Atual:</strong> {{ lead.get_status_display }}</li>
+    </ul>
+
+    <hr>
+    <h3>Registrar Nova Interação</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar Interação</button>
+    </form>
+    
+    <hr>
+    <h3>Histórico de Interações</h3>
+    {% for interacao in interacoes %}
+        <div style="border-left: 3px solid #ccc; padding-left: 15px; margin-bottom: 15px;">
+            <p>{{ interacao.descricao }}</p>
+            <small>Por: {{ interacao.usuario.get_full_name }} em {{ interacao.data_interacao|date:"d/m/Y H:i" }}</small>
+        </div>
+    {% empty %}
+        <p>Nenhuma interação registrada para este lead.</p>
+    {% endfor %}
+{% endblock %}

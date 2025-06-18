@@ -12,13 +12,16 @@ from .models import Lead, Reserva, HistoricoStatusReserva # Reserva e HistoricoS
 from empreendimentos.models import Unidade
 from core.models import User
 from core.decorators import is_corretor # Decorator de perfil importado
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+
+
+
 
 # -----------------------------------------------------------------------------
 
 def solicitar_reserva_view(request, unidade_id):
-    """
-    Processa o formulário de solicitação de reserva enviado pelo visitante.
-    """
     unidade = get_object_or_404(Unidade, pk=unidade_id)
 
     if request.method == 'POST':
@@ -26,10 +29,21 @@ def solicitar_reserva_view(request, unidade_id):
         if form.is_valid():
             lead = form.save(commit=False)
             lead.unidade_interesse = unidade
+            
+            # --- LÓGICA DE RASTREAMENTO CORRIGIDA ---
+            # Pega o username do corretor do campo oculto do formulário
+            ref_username = request.POST.get('ref_username')
+            if ref_username:
+                try:
+                    corretor_referencia = User.objects.get(username=ref_username, perfil='corretor')
+                    lead.corretor_origem_link = corretor_referencia
+                    lead.origem = 'link_corretor'
+                except User.DoesNotExist:
+                    pass
+            # --- FIM DA LÓGICA CORRIGIDA ---
+            
             lead.save()
-            
-            messages.success(request, 'Sua solicitação foi enviada com sucesso! Em breve um de nossos corretores entrará em contato.')
-            
+            messages.success(request, 'Sua solicitação foi enviada com sucesso!')
             return redirect('empreendimentos:detail', slug=unidade.empreendimento.slug)
     
     return redirect('empreendimentos:detail', slug=unidade.empreendimento.slug)
@@ -89,3 +103,26 @@ def reserva_direta_corretor_view(request, unidade_id):
     
     # Se for um GET, redireciona, pois esta URL só processa POST.
     return redirect('empreendimentos:detail', slug=unidade.empreendimento.slug)
+
+
+def gerar_pdf_reserva(request, pk):
+    try:
+        reserva = Reserva.objects.get(pk=pk)
+    except Reserva.DoesNotExist:
+        return HttpResponse("Reserva não encontrada.", status=404)
+
+    # Renderiza o template HTML com o contexto da reserva
+    template_path = 'reservas/reserva_pdf_template.html'
+    context = {'reserva': reserva}
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # Cria o PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="reserva_{reserva.id}.pdf"' # Força o download
+    
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Ocorreu um erro ao gerar o PDF <pre>' + html + '</pre>')
+    
+    return response

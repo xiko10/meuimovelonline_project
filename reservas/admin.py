@@ -5,7 +5,8 @@ from .models import Lead, Reserva, InteracaoLead, DocumentoReserva, HistoricoSta
 
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nome_cliente', 'unidade_interesse', 'status', 'origem', 'corretor_atribuido', 'data_criacao')
+    # AQUI ESTÁ A CORREÇÃO: Adicionamos 'corretor_origem_link' ao list_display
+    list_display = ('id', 'nome_cliente', 'unidade_interesse', 'status', 'origem', 'corretor_atribuido', 'corretor_origem_link', 'data_criacao')
     list_filter = ('status', 'origem', 'data_criacao')
     search_fields = ('nome_cliente', 'email_cliente', 'cpf_cliente')
     list_per_page = 20

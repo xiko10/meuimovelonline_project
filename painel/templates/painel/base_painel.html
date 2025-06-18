@@ -12,6 +12,15 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body>
+
+    {% if messages %}
+        <ul class="messages" style="list-style-type: none; padding: 10px; margin: 0; background-color: #e6fa41; border: 1px solid #004132;">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <header>
         <h1>Meu Imóvel Online - Área Restrita</h1>
         <nav>

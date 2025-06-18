@@ -1,0 +1,22 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Materiais de Venda{% endblock %}
+{% block content %}
+    <h2>Materiais de Venda</h2>
+    <p>Acesse aqui os materiais de apoio disponibilizados pela sua imobiliária.</p>
+    <table border="1" width="100%">
+        <thead>
+            <tr><th>Título</th><th>Arquivo</th><th>Data de Upload</th></tr>
+        </thead>
+        <tbody>
+            {% for material in materiais %}
+            <tr>
+                <td>{{ material.titulo }}</td>
+                <td><a href="{{ material.arquivo.url }}" target="_blank">Baixar</a></td>
+                <td>{{ material.data_upload|date:"d/m/Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">Nenhum material de venda disponível no momento.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

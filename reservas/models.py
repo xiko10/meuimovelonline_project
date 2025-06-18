@@ -31,7 +31,7 @@ class Lead(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_LEAD_CHOICES, default='novo')  
     origem = models.CharField(max_length=20, choices=ORIGEM_LEAD_CHOICES, default='organico')  
     corretor_atribuido = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='leads_atribuidos')  
-    
+    corretor_origem_link = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='leads_gerados_por_link', help_text="Corretor que originou o lead através de um link de marketing")
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_ultima_interacao = models.DateTimeField(auto_now=True)
 

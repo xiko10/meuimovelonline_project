@@ -141,3 +141,48 @@ class FluxoPagamento(models.Model):
     
     def __str__(self):
         return f"{self.empreendimento.nome} - {self.serie}"
+    
+
+class Parceria(models.Model):
+    """
+    Representa o vínculo de parceria entre um Empreendimento e uma Imobiliária.
+    """
+    STATUS_PARCERIA_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('aceita', 'Aceita'),
+        ('recusada', 'Recusada'),
+        ('revogada', 'Revogada'),
+    ]
+    
+    empreendimento = models.ForeignKey(Empreendimento, on_delete=models.CASCADE, related_name='parcerias')
+    imobiliaria = models.ForeignKey(Imobiliaria, on_delete=models.CASCADE, related_name='parcerias')
+    status = models.CharField(max_length=20, choices=STATUS_PARCERIA_CHOICES, default='pendente')
+    data_convite = models.DateTimeField(auto_now_add=True)
+    data_resposta = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        # Garante que só pode haver uma parceria por empreendimento/imobiliária
+        unique_together = ('empreendimento', 'imobiliaria')
+
+    def __str__(self):
+        return f"Parceria entre {self.empreendimento.nome} e {self.imobiliaria.nome}"
+    
+class MaterialVenda(models.Model):
+    """
+    Armazena um arquivo de material de venda (PDF, Tabela, etc.)
+    associado a uma imobiliária.
+    """
+    imobiliaria = models.ForeignKey(Imobiliaria, on_delete=models.CASCADE, related_name='materiais')
+    titulo = models.CharField(max_length=200)
+    arquivo = models.FileField(upload_to='materiais_venda/')
+    data_upload = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = "Material de Venda"
+        verbose_name_plural = "Materiais de Venda"
+        ordering = ['-data_upload']
+
+    def __str__(self):
+        return self.titulo
+
+

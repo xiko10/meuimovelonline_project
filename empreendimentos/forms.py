@@ -20,6 +20,7 @@ from .models import (
     FluxoPagamento
 )
 from core.models import User, Imobiliaria
+from .models import MaterialVenda
 
 
 class EmpreendimentoEtapaInicialForm(forms.ModelForm):
@@ -186,3 +187,9 @@ class EmpreendimentoEtapa8Form(forms.ModelForm):
         help_texts = {
             'slug': 'Este texto será usado na URL do seu anúncio. Use apenas letras, números e hifens.'
         }
+
+
+class MaterialVendaForm(forms.ModelForm):
+    class Meta:
+        model = MaterialVenda
+        fields = ['titulo', 'arquivo']        

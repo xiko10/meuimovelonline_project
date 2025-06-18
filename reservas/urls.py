@@ -7,4 +7,5 @@ urlpatterns = [
     # Rota para processar a solicitação de reserva para uma unidade específica
     path('solicitar/<int:unidade_id>/', views.solicitar_reserva_view, name='solicitar_reserva'),
     path('reservar-direto/<int:unidade_id>/', views.reserva_direta_corretor_view, name='reserva_direta_corretor'),
+    path('reserva/<int:pk>/pdf/', views.gerar_pdf_reserva, name='gerar_pdf_reserva'),
 ]

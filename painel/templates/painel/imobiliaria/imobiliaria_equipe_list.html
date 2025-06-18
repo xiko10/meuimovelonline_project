@@ -1,0 +1,24 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Minha Equipe{% endblock %}
+{% block content %}
+    <h2>Gestão de Equipe</h2>
+    <a href="{% url 'imobiliaria_membro_create' %}" style="display: inline-block; padding: 10px; background-color: #2de187; color: #004132; text-decoration: none; margin-bottom: 20px;">
+        + Adicionar Novo Membro
+    </a>
+    <table border="1" width="100%">
+        <thead>
+            <tr><th>Nome</th><th>Email</th><th>Perfil</th></tr>
+        </thead>
+        <tbody>
+            {% for membro in membros %}
+            <tr>
+                <td>{{ membro.get_full_name }}</td>
+                <td>{{ membro.email }}</td>
+                <td>{{ membro.get_perfil_display }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">Nenhum membro na equipe ainda.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

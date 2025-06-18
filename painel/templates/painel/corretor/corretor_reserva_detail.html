@@ -1,0 +1,14 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Detalhes da Reserva #{{ reserva.id }}{% endblock %}
+{% block content %}
+    <h2>Detalhes da Reserva #{{ reserva.id }}</h2>
+    <ul>
+        <li><strong>Empreendimento:</strong> {{ reserva.unidade.empreendimento.nome }}</li>
+        <li><strong>Unidade:</strong> {{ reserva.unidade }}</li>
+        <li><strong>Cliente:</strong> {{ reserva.cliente.get_full_name }}</li>
+        <li><strong>Status Atual:</strong> {{ reserva.get_status_display }}</li>
+    </ul>
+    <hr>
+    <h3>Ações</h3>
+    <a href="{% url 'reservas:gerar_pdf_reserva' reserva.id %}" target="_blank" style="padding: 10px; background-color: #004132; color: white; text-decoration: none;">Gerar PDF da Reserva</a>
+{% endblock %}

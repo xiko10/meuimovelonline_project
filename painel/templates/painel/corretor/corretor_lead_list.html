@@ -17,7 +17,7 @@
         <tbody>
             {% for lead in leads %}
                 <tr>
-                    <td>{{ lead.id }}</td>
+                    <td><a href="{% url 'corretor_lead_detail' lead.id %}">{{ lead.id }}</a></td>
                     <td>{{ lead.nome_cliente }}</td>
                     <td>{{ lead.whatsapp_cliente }}</td>
                     <td>{{ lead.unidade_interesse }}</td>

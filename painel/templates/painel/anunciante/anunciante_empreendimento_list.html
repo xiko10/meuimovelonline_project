@@ -1,0 +1,40 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Meus Empreendimentos{% endblock %}
+
+{% block content %}
+    <h2>Meus Empreendimentos</h2>
+    <p>Gerencie aqui todos os seus empreendimentos cadastrados.</p>
+    <a href="{% url 'anunciante_empreendimento_create' %}" style="display: inline-block; padding: 10px; background-color: #2de187; color: #004132; text-decoration: none; margin-bottom: 20px;">
+        + Cadastrar Novo Empreendimento
+    </a>
+
+    <table border="1" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome do Empreendimento</th>
+                <th>Status</th>
+                <th>Status Publicação</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in empreendimentos %}
+                <tr>
+                    <td>{{ emp.id }}</td>
+                    <td>{{ emp.nome }}</td>
+                    <td>{{ emp.get_status_empreendimento_display }}</td>
+                    <td>{{ emp.get_status_publicacao_display }}</td>
+                    <td>
+                        <a href="{% url 'anunciante_empreendimento_update' pk=emp.pk step=3 %}">Editar</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">Você ainda não cadastrou nenhum empreendimento.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+

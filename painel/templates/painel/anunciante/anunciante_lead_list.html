@@ -5,14 +5,13 @@
     <p>Leads são solicitações de reserva feitas por visitantes que precisam de sua atenção.</p>
     <table border="1" width="100%">
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Contato</th>
-                <th>Unidade de Interesse</th>
-                <th>Status</th>
-                <th>Data</th>
-            </tr>
+        <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Unidade</th>
+        <th>Status</th>
+        <th>Atribuído a</th>
+        <th>Ações</th> </tr>
         </thead>
         <tbody>
             {% for lead in leads %}
@@ -22,7 +21,12 @@
                     <td>{{ lead.whatsapp_cliente }}</td>
                     <td>{{ lead.unidade_interesse }}</td>
                     <td>{{ lead.get_status_display }}</td>
+                    <td>{{ lead.corretor_atribuido.get_full_name|default:"-" }}</td>
                     <td>{{ lead.data_criacao|date:"d/m/Y H:i" }}</td>
+                    
+                    {% if not lead.corretor_atribuido %}
+                        <a href="{% url 'anunciante_atribuir_lead' lead.id %}">Atribuir</a>
+                    {% endif %}
                 </tr>
             {% empty %}
                 <tr>

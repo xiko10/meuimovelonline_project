@@ -1,0 +1,32 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Materiais de Venda{% endblock %}
+{% block content %}
+    <h2>Gerenciar Materiais de Venda</h2>
+    <p>Faça upload de tabelas, apresentações e outros arquivos para sua equipe.</p>
+    
+    <form method="post" enctype="multipart/form-data" style="margin-bottom: 30px; padding: 15px; border: 1px solid #ccc;">
+        <h3>Enviar Novo Material</h3>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Enviar Arquivo</button>
+    </form>
+
+    <hr>
+    <h3>Materiais Enviados</h3>
+    <table border="1" width="100%">
+        <thead>
+            <tr><th>Título</th><th>Arquivo</th><th>Data de Upload</th></tr>
+        </thead>
+        <tbody>
+            {% for material in materiais %}
+            <tr>
+                <td>{{ material.titulo }}</td>
+                <td><a href="{{ material.arquivo.url }}" target="_blank">Baixar</a></td>
+                <td>{{ material.data_upload|date:"d/m/Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">Nenhum material de venda enviado ainda.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

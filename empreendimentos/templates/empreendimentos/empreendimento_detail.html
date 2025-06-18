@@ -1,52 +1,106 @@
-<h1>{{ empreendimento.nome }}</h1>
-<p><strong>Status:</strong> {{ empreendimento.get_status_empreendimento_display }}</p>
+{% extends "painel/base_painel.html" %} {% block title %}{{ empreendimento.nome }}{% endblock %}
 
-{% if messages %}
-    <ul class="messages" style="background-color: lightgreen; padding: 10px;">
-        {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+{% block content %}
+    <h1>{{ empreendimento.nome }}</h1>
+    <p><strong>Status:</strong> {{ empreendimento.get_status_empreendimento_display }}</p>
 
-<hr>
-<h3>Unidades</h3>
-{% for unidade in empreendimento.unidades.all %}
-    <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
-        <p>
-            <strong>Tipo:</strong> {{ unidade.get_tipo_display }} | 
-            <strong>Metragem:</strong> {{ unidade.metragem }}m² |
-            <strong>Status:</strong> {{ unidade.get_status_display }}
-        </p>
-        
-        {% if unidade.status == 'disponivel' %}
-            
-            {% if user.is_authenticated and user.perfil == 'corretor' %}
-                <form action="{% url 'reservas:reserva_direta_corretor' unidade.id %}" method="post">
-                    {% csrf_token %}
-                    <p><strong>Realizar Reserva Direta para Cliente:</strong></p>
-                    <input type="text" name="nome_cliente" placeholder="Nome completo do cliente" required>
-                    <input type="text" name="cpf_cliente" placeholder="CPF do cliente" required>
-                    <input type="email" name="email_cliente" placeholder="E-mail do cliente" required>
-                    <input type="text" name="whatsapp_cliente" placeholder="WhatsApp do cliente" required>
-                    <button type="submit">Reservar Unidade</button>
-                </form>
-            {% else %}
-                <form action="{% url 'reservas:solicitar_reserva' unidade.id %}" method="post">
-                    {% csrf_token %}
-                    <p><strong>Tenho Interesse!</strong></p>
-                    <input type="text" name="nome_cliente" placeholder="Seu nome completo" required>
-                    <input type="text" name="whatsapp_cliente" placeholder="Seu WhatsApp" required>
-                    <input type="email" name="email_cliente" placeholder="Seu e-mail">
-                    <input type="text" name="cpf_cliente" placeholder="Seu CPF (opcional)">
-                    <button type="submit">Enviar Solicitação</button>
-                </form>
-            {% endif %}
+    {% if messages %}
+        <ul class="messages" style="background-color: lightgreen; padding: 10px;">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-        {% else %}
-            <p><em>Esta unidade não está disponível para reserva.</em></p>
-        {% endif %}
+    <hr>
+    
+    {% if user.is_authenticated and user.perfil == 'corretor' %}
+    <div class="corretor-actions" style="background-color: #f2f4f8; padding: 15px; margin-bottom: 20px;">
+        <h4>Ferramentas do Corretor</h4>
+        <div id="link-container" style="display: none; margin-top: 10px;">
+            <input type="text" id="link-gerado" readonly style="width: 70%; padding: 8px;">
+            <button type="button" onclick="copiarLink()">Copiar</button>
+        </div>
+        <button type="button" onclick="gerarLinkApresentacao(this)">Gerar Link de Apresentação</button>
     </div>
-{% empty %}
-    <p>Nenhuma unidade cadastrada para este empreendimento.</p>
-{% endfor %}
+    <hr>
+    {% endif %}
+
+    <h3>Descrição</h3>
+    <p>{{ empreendimento.descricao_curta }}</p>
+    <hr>
+
+    <h3>Unidades</h3>
+    {% for unidade in empreendimento.unidades.all %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+            <p>
+                <strong>Tipo:</strong> {{ unidade.get_tipo_display }} | 
+                <strong>Metragem:</strong> {{ unidade.metragem }}m² |
+                <strong>Status:</strong> {{ unidade.get_status_display }}
+            </p>
+            
+            {% if unidade.status == 'disponivel' %}
+                {% if user.is_authenticated and user.perfil == 'corretor' %}
+                    <details>
+                        <summary><strong>Realizar Reserva Direta para Cliente</strong></summary>
+                        <form action="{% url 'reservas:reserva_direta_corretor' unidade.id %}" method="post" style="margin-top: 10px;">
+                            {% csrf_token %}
+                            <input type="text" name="nome_cliente" placeholder="Nome completo do cliente" required><br>
+                            <input type="text" name="cpf_cliente" placeholder="CPF do cliente" required><br>
+                            <input type="email" name="email_cliente" placeholder="E-mail do cliente" required><br>
+                            <input type="text" name="whatsapp_cliente" placeholder="WhatsApp do cliente" required><br>
+                            <button type="submit">Reservar Unidade</button>
+                        </form>
+                    </details>
+                {% else %}
+                    <details>
+                        <summary><strong>Tenho Interesse!</strong></summary>
+                        <form action="{% url 'reservas:solicitar_reserva' unidade.id %}" method="post" style="margin-top: 10px;">
+                            {% csrf_token %}
+
+                             {% if ref_corretor %}
+                                <input type="hidden" name="ref_username" value="{{ ref_corretor }}">
+                            {% endif %} 
+
+                            <input type="text" name="nome_cliente" placeholder="Seu nome completo" required><br>
+                            <input type="text" name="whatsapp_cliente" placeholder="Seu WhatsApp" required><br>
+                            <input type="email" name="email_cliente" placeholder="Seu e-mail"><br>
+                            <input type="text" name="cpf_cliente" placeholder="Seu CPF (opcional)"><br>
+                            <button type="submit">Enviar Solicitação</button>
+                        </form>
+                    </details>
+                {% endif %}
+            {% else %}
+                <p><em>Esta unidade não está disponível para reserva.</em></p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Nenhuma unidade cadastrada para este empreendimento.</p>
+    {% endfor %}
+
+    <script>
+        function gerarLinkApresentacao(botao) {
+            const urlSemQuery = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            const linkDeApresentacao = `${urlSemQuery}?ref={{ user.username }}`;
+            
+            // Mostra o container com o link
+            const linkContainer = document.getElementById('link-container');
+            const inputLink = document.getElementById('link-gerado');
+            
+            inputLink.value = linkDeApresentacao;
+            linkContainer.style.display = 'block';
+            botao.style.display = 'none'; // Esconde o botão original
+        }
+
+        function copiarLink() {
+            const inputLink = document.getElementById('link-gerado');
+            inputLink.select(); // Seleciona o texto do input
+            inputLink.setSelectionRange(0, 99999); // Para mobile
+            
+            navigator.clipboard.writeText(inputLink.value).then(function() {
+                alert('Link copiado para a área de transferência!');
+            });
+        }
+    </script>
+
+{% endblock %}

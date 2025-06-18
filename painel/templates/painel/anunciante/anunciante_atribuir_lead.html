@@ -1,0 +1,17 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Atribuir Lead{% endblock %}
+
+{% block content %}
+    <h2>Atribuir Lead #{{ lead.id }}</h2>
+    <p>
+        <strong>Cliente:</strong> {{ lead.nome_cliente }} <br>
+        <strong>Interesse:</strong> {{ lead.unidade_interesse.empreendimento.nome }} - Unidade {{ lead.unidade_interesse.id }}
+    </p>
+    <hr>
+    <p>Selecione um corretor de uma imobiliária parceira para assumir este atendimento.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Atribuir Lead</button>
+    </form>
+{% endblock %}

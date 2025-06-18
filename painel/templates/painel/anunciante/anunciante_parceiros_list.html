@@ -1,0 +1,47 @@
+{% extends "painel/base_painel.html" %}
+{% load custom_filters %}
+{% block title %}Meus Parceiros{% endblock %}
+{% block content %}
+    <h2>Gestão de Parceiros de Venda</h2>
+    <p>Veja abaixo as imobiliárias disponíveis na plataforma e convide-as para vender seus empreendimentos.</p>
+    
+    <table border="1" width="100%">
+        <thead>
+            <tr>
+                <th>Nome da Imobiliária</th>
+                <th>Status da Parceria</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for imobiliaria in imobiliarias %}
+                <tr>
+                    <td>{{ imobiliaria.nome }}</td>
+                    <td>
+                        {{ parcerias_status|get_item:imobiliaria.id|default:"Sem parceria" }}
+                    </td>
+                    <td>
+                        {% if not parcerias_status|get_item:imobiliaria.id %}
+                            <form action="{% url 'anunciante_convidar_parceiro' imobiliaria.id %}" method="post">
+                                {% csrf_token %}
+                                <select name="empreendimento" required>
+                                    <option value="">Selecione o empreendimento...</option>
+                                    {% for emp in meus_empreendimentos %}
+                                        <option value="{{ emp.id }}">{{ emp.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit">Convidar</button>
+                            </form>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">Nenhuma imobiliária cadastrada na plataforma.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

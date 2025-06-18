@@ -1,0 +1,18 @@
+{% extends "painel/base_painel.html" %}
+{% load static %}
+
+{% block title %}Dashboard da Imobiliária{% endblock %}
+
+{% block content %}
+    <h2>Painel da Imobiliária</h2>
+    <p>Bem-vindo, {{ user.get_full_name }}.</p>
+    
+    <p>Use os links abaixo para gerenciar sua equipe e parcerias.</p>
+
+    <ul class="dashboard-list">
+        <li><a href="{% url 'imobiliaria_parcerias_list' %}">Gerenciar Parcerias</a></li>
+        <li><a href="{% url 'imobiliaria_equipe_list' %}">Gerenciar Minha Equipe</a></li>
+        <li><a href="{% url 'imobiliaria_materiais_list' %}">Gerenciar Materiais de Venda</a></li>
+
+        </ul>
+{% endblock %}

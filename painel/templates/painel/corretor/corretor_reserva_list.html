@@ -16,7 +16,7 @@
         <tbody>
             {% for reserva in reservas %}
                 <tr>
-                    <td>{{ reserva.id }}</td>
+                    <td><a href="{% url 'corretor_reserva_detail' reserva.id %}">{{ reserva.id }}</a></td>
                     <td>{{ reserva.unidade }}</td>
                     <td>{{ reserva.cliente.get_full_name }}</td>
                     <td>{{ reserva.get_status_display }}</td>

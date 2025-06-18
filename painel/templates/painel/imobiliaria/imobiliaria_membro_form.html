@@ -1,0 +1,10 @@
+{% extends "painel/base_painel.html" %}
+{% block title %}Adicionar Membro{% endblock %}
+{% block content %}
+    <h2>Adicionar Novo Membro à Equipe</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar Membro</button>
+    </form>
+{% endblock %}
