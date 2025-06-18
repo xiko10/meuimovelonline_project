@@ -2,25 +2,15 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class Imobiliaria(models.Model):
-    """Representa uma empresa imobiliária parceira."""
-    nome = models.CharField(max_length=100) 
-    cnpj = models.CharField(max_length=20, unique=True) 
-    status = models.CharField(
-        max_length=20,
-        choices=[('ativa', 'Ativa'), ('pendente', 'Pendente'), ('inativa', 'Inativa')],
-        default='pendente'
-    ) 
-    data_cadastro = models.DateTimeField(auto_now_add=True) 
-
-    class Meta:
-        verbose_name = "Imobiliária"
-        verbose_name_plural = "Imobiliárias"
+    nome = models.CharField(max_length=100)
+    cnpj = models.CharField(max_length=20, unique=True)
+    status = models.CharField(max_length=20, choices=[('ativa', 'Ativa'), ('pendente', 'Pendente'), ('inativa', 'Inativa')], default='pendente')
+    data_cadastro = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.nome
 
 class User(AbstractUser):
-    """Modelo de usuário customizado que abrange todos os perfis da plataforma.""" 
     PERFIS = [
         ('superadmin', 'Super Admin'),
         ('anunciante', 'Anunciante'),
@@ -29,17 +19,9 @@ class User(AbstractUser):
         ('gerente', 'Gerente de Imobiliária'),
         ('corretor', 'Corretor'),
         ('cliente', 'Cliente'),
-    ] 
-
+    ]
     perfil = models.CharField(max_length=20, choices=PERFIS, blank=True)
-    imobiliaria = models.ForeignKey(
-        Imobiliaria,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='membros'
-    ) 
-    
+    imobiliaria = models.ForeignKey(Imobiliaria, on_delete=models.SET_NULL, null=True, blank=True, related_name='membros')
     cpf = models.CharField(max_length=14, blank=True, null=True, unique=True)
     whatsapp = models.CharField(max_length=15, blank=True, null=True)
     rua = models.CharField(max_length=255, blank=True, null=True)

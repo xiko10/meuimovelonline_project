@@ -1,47 +1,33 @@
 {% load static %}
-{% load widget_tweaks %}
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Painel - Meu Imóvel Online{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/painel_estilos.css' %}">
-    
-    {% block extra_head %}{% endblock %}
+    <title>{% block title %}Painel{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 </head>
 <body>
-
-    {% if messages %}
-        <ul class="messages" style="list-style-type: none; padding: 10px; margin: 0; background-color: #e6fa41; border: 1px solid #004132;">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <header>
-        <h1>Meu Imóvel Online - Área Restrita</h1>
+    <header class="header-main">
+        <div class="logo">Painel de Gestão</div>
         <nav>
             {% if user.is_authenticated %}
+                <span style="margin-right: 20px;">Olá, {{ user.get_full_name }}</span>
                 <form method="post" action="{% url 'logout' %}" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit">Sair</button>
+                    <button type="submit" class="nav-link" style="border:none; cursor:pointer;">Sair</button>
                 </form>
             {% endif %}
         </nav>
     </header>
-    <hr>
-    <main>
-        {% block content %}
-        {% endblock %}
+    <main class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% block content %}{% endblock %}
     </main>
-    <hr>
-    <footer>
-        <p>&copy; 2025 Meu Imóvel Online. Todos os direitos reservados.</p>
-    </footer>
-
-    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

@@ -8,8 +8,6 @@ class Empreendimento(models.Model):
     TIPO_USO_CHOICES = [('residencial', 'Residencial'), ('comercial', 'Comercial'), ('misto', 'Misto')]
     STATUS_EMPREENDIMENTO_CHOICES = [('breve_lancamento', 'Breve Lançamento'), ('lancamento', 'Lançamento'), ('em_obras', 'Em Obras'), ('pronto', 'Pronto para morar')]
     STATUS_PUBLICACAO_CHOICES = [('rascunho', 'Rascunho'), ('publicado', 'Publicado')] # Para a Etapa 8
-
-    # --- Campos existentes ---
     nome = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, help_text="URL amigável, ex: 'meu-empreendimento-incrivel'")
     tipo_empreendimento = models.CharField(max_length=20, choices=TIPO_EMPREENDIMENTO_CHOICES)
@@ -33,10 +31,7 @@ class Empreendimento(models.Model):
     imobiliarias_autorizadas = models.ManyToManyField(Imobiliaria, related_name='empreendimentos_autorizados_imob', blank=True)
     visivel_consumidor_final = models.BooleanField(default=True)
     visivel_para_nao_autorizados = models.BooleanField(default=True)
-
-    # --- CAMPO FALTANTE ADICIONADO AQUI ---
     status_publicacao = models.CharField(max_length=20, choices=STATUS_PUBLICACAO_CHOICES, default='rascunho')
-
     def __str__(self):
         return self.nome
 
@@ -144,26 +139,14 @@ class FluxoPagamento(models.Model):
     
 
 class Parceria(models.Model):
-    """
-    Representa o vínculo de parceria entre um Empreendimento e uma Imobiliária.
-    """
-    STATUS_PARCERIA_CHOICES = [
-        ('pendente', 'Pendente'),
-        ('aceita', 'Aceita'),
-        ('recusada', 'Recusada'),
-        ('revogada', 'Revogada'),
-    ]
-    
+    STATUS_PARCERIA_CHOICES = [('pendente', 'Pendente'), ('aceita', 'Aceita'), ('recusada', 'Recusada'), ('revogada', 'Revogada')]
     empreendimento = models.ForeignKey(Empreendimento, on_delete=models.CASCADE, related_name='parcerias')
     imobiliaria = models.ForeignKey(Imobiliaria, on_delete=models.CASCADE, related_name='parcerias')
     status = models.CharField(max_length=20, choices=STATUS_PARCERIA_CHOICES, default='pendente')
     data_convite = models.DateTimeField(auto_now_add=True)
     data_resposta = models.DateTimeField(null=True, blank=True)
-
     class Meta:
-        # Garante que só pode haver uma parceria por empreendimento/imobiliária
         unique_together = ('empreendimento', 'imobiliaria')
-
     def __str__(self):
         return f"Parceria entre {self.empreendimento.nome} e {self.imobiliaria.nome}"
     

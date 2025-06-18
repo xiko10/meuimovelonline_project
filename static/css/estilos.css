@@ -1,0 +1,143 @@
+/* static/css/estilos.css */
+
+/* === VARIÁVEIS DE COR E FONTE (DO NOSSO DOCUMENTO 6) === */
+:root {
+    --cor-primaria: #e6fa41;       /* Verde Limão */
+    --cor-secundaria: #2de187;     /* Verde Claro */
+    --cor-texto-principal: #004132; /* Verde Escuro */
+    --cor-texto-secundario: #474747; /* Cinza Médio */
+    --cor-fundo: #FFFFFF;
+    --cor-fundo-card: #f8f9fa;   /* Cinza Mais Claro */
+    --cor-borda: #dee2e6;
+    --fonte-principal: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* === ESTILOS GLOBAIS === */
+body {
+    font-family: var(--fonte-principal);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto-secundario);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h1, h2, h3, h4 {
+    color: var(--cor-texto-principal);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+a {
+    color: var(--cor-texto-principal);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+a:hover {
+    color: var(--cor-secundaria);
+    text-decoration: none;
+}
+
+/* === HEADER === */
+.header-principal {
+    background-color: var(--cor-fundo);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--cor-borda);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--cor-texto-principal);
+}
+
+.nav-link {
+    background-color: var(--cor-primaria);
+    color: var(--cor-texto-principal);
+    padding: 0.5rem 1.2rem;
+    border-radius: 20px;
+    font-weight: 700;
+}
+
+/* === CARDS DE EMPREENDIMENTO === */
+.grid-empreendimentos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.card-empreendimento {
+    background: #fff;
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--cor-texto-secundario);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-empreendimento:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.card-imagem-wrapper {
+    width: 100%;
+    padding-top: 65%;
+    position: relative;
+    background-color: #eee;
+}
+
+.card-imagem-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-status-flag {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background-color: var(--cor-primaria);
+    color: var(--cor-texto-principal);
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.card-conteudo {
+    padding: 1.5rem;
+}
+
+.card-titulo {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-localizacao {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.card-preco {
+    margin-top: auto;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--cor-texto-principal);
+}

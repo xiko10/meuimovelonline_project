@@ -1,0 +1,16 @@
+{% extends "painel/base_painel.html" %}
+
+{% block title %}Dashboard do Gerente{% endblock %}
+
+{% block content %}
+    <h2>Painel do Gerente de Imobiliária</h2>
+    <p>Bem-vindo, {{ user.get_full_name }}.</p>
+    
+    <p>Acompanhe o desempenho e gerencie os leads da sua equipe.</p>
+
+    <ul class="dashboard-list">
+        <li><a href="{% url 'gerente_equipe_list' %}">Acompanhar Minha Equipe</a></li>
+        <li><a href="{% url 'gerente_venda_list' %}">Acompanhar Vendas da Equipe</a></li>
+        <li><a href="#">Ver Relatórios de Performance</a></li>
+    </ul>
+{% endblock %}

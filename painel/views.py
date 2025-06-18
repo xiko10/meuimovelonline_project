@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django.db.models import Q
+import csv
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -501,3 +502,70 @@ def corretor_materiais_list(request):
 def corretor_reserva_detail(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk, corretor=request.user)
     return render(request, 'painel/corretor/corretor_reserva_detail.html', {'reserva': reserva})
+
+
+@login_required
+@user_passes_test(is_anunciante_ou_superadmin)
+def anunciante_exportar_reservas_csv(request):
+    # Define a resposta HTTP como um arquivo CSV para download
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="relatorio_reservas.csv"'
+    
+    # Cria um "escritor" de CSV que escreve na resposta HTTP
+    writer = csv.writer(response)
+    
+    # Escreve a linha do cabeçalho
+    writer.writerow([
+        'ID Reserva', 'ID Unidade', 'Empreendimento', 'Cliente', 
+        'Email Cliente', 'Corretor', 'Status', 'Data da Criacao'
+    ])
+    
+    # Busca as reservas do anunciante logado
+    reservas = Reserva.objects.filter(unidade__empreendimento__anunciante_responsavel=request.user)
+    
+    # Escreve uma linha para cada reserva
+    for reserva in reservas:
+        writer.writerow([
+            reserva.id,
+            reserva.unidade.id,
+            reserva.unidade.empreendimento.nome,
+            reserva.cliente.get_full_name(),
+            reserva.cliente.email,
+            reserva.corretor.get_full_name() if reserva.corretor else '-',
+            reserva.get_status_display(),
+            reserva.data_criacao.strftime('%d/%m/%Y %H:%M')
+        ])
+        
+    return response
+
+
+@login_required
+@user_passes_test(is_gerente_anunciante)
+def gerente_anunciante_dashboard(request):
+    return render(request, 'painel/gerente_anunciante/dashboard.html')
+
+@login_required
+@user_passes_test(is_gerente_anunciante)
+def gerente_anunciante_parcerias(request):
+    return render(request, 'painel/gerente_anunciante/parcerias.html')
+
+@login_required
+@user_passes_test(is_gerente_anunciante)
+def gerente_anunciante_leads(request):
+    return render(request, 'painel/gerente_anunciante/leads.html')
+
+@login_required
+@user_passes_test(is_gerente_anunciante)
+def gerente_anunciante_relatorios(request):
+    return render(request, 'painel/gerente_anunciante/relatorios.html')
+
+
+@login_required
+@user_passes_test(is_gerente)
+def gerente_equipe_list(request):
+    return render(request, 'painel/gerente/gerente_equipe_list.html')
+
+@login_required
+@user_passes_test(is_gerente)
+def gerente_venda_list(request):
+    return render(request, 'painel/gerente/gerente_venda_list.html')

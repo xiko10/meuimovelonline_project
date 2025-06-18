@@ -1,17 +1,37 @@
-<h1>Lista de Empreendimentos</h1>
-<hr>
-{% if empreendimentos %}
-    {% for emp in empreendimentos %}
-        <div style="border: 1px solid black; margin: 10px; padding: 10px;">
-            <h2>
-                <a href="{% url 'empreendimentos:detail' emp.slug %}">
-                    {{ emp.nome }}
-                </a>
-            </h2>
-            <p>{{ emp.descricao_curta }}</p>
-            <p><strong>Status:</strong> {{ emp.get_status_empreendimento_display }}</p>
-        </div>
-    {% endfor %}
-{% else %}
-    <p>Nenhum empreendimento publicado no momento.</p>
-{% endif %}
+{% extends "core/base_publica.html" %}
+{% load static %}
+
+{% block title %}Encontre seu Imóvel{% endblock %}
+
+{% block content %}
+    <h1>Lançamentos</h1>
+    <p>{{ empreendimentos.count }} empreendimentos encontrados</p>
+
+    <div class="grid-empreendimentos">
+        {% for emp in empreendimentos %}
+            <a href="{% url 'empreendimentos:detail' emp.slug %}" class="card">
+                <div class="card-imagem">
+                    {% with primeira_imagem=emp.imagens_galeria.first %}
+                        {% if primeira_imagem and primeira_imagem.arquivo %}
+                            <img src="{{ primeira_imagem.arquivo.url }}" alt="{{ emp.nome }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x260/f2f4f8/474747?text=Sem+Imagem" alt="Sem Imagem">
+                        {% endif %}
+                    {% endwith %}
+                    <span class="card-status">{{ emp.get_status_empreendimento_display }}</span>
+                </div>
+                <div class="card-conteudo">
+                    <h3 class="card-titulo">{{ emp.nome }}</h3>
+                    <p class="card-localizacao">{{ emp.cidade }}, {{ emp.estado }}</p>
+                    {% with primeira_unidade=emp.unidades.first %}
+                        <p class="card-preco">
+                            A partir de R$ {{ primeira_unidade.valor_total|floatformat:2|default:'--' }}
+                        </p>
+                    {% endwith %}
+                </div>
+            </a>
+        {% empty %}
+            <p>Nenhum empreendimento publicado no momento.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

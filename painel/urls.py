@@ -26,6 +26,16 @@ urlpatterns = [
         path('parceiros/convidar/<int:imobiliaria_id>/', views.anunciante_convidar_parceiro, name='anunciante_convidar_parceiro'),
         path('analytics/', views.anunciante_analytics_view, name='anunciante_analytics'),
         path('configuracoes/', views.anunciante_configuracoes_view, name='anunciante_configuracoes'),
+        path('analytics/exportar-reservas/', views.anunciante_exportar_reservas_csv, name='anunciante_exportar_reservas_csv'),
+    ])),
+
+
+    # --- ROTAS GERENTE ANUNCIANTE ---
+    path('gerente-anunciante/', include([
+        path('', views.gerente_anunciante_dashboard, name='gerente_anunciante_dashboard'),
+        path('parcerias/', views.gerente_anunciante_parcerias, name='gerente_anunciante_parcerias'),
+        path('leads/', views.gerente_anunciante_leads, name='gerente_anunciante_leads'),
+        path('relatorios/', views.gerente_anunciante_relatorios, name='gerente_anunciante_relatorios'),
     ])),
 
     # --- ROTAS DO ADMIN DE IMOBILIÁRIA ---
@@ -41,7 +51,9 @@ urlpatterns = [
     # --- ROTAS DO GERENTE DE IMOBILIÁRIA ---
     path('gerente/', include([
         path('', views.gerente_dashboard, name='gerente_dashboard'),
-    ])),
+        path('equipe/', views.gerente_equipe_list, name='gerente_equipe_list'),
+        path('vendas/', views.gerente_venda_list, name='gerente_venda_list'),    
+        ])),
     
     # --- ROTAS DO CORRETOR ---
     path('corretor/', include([

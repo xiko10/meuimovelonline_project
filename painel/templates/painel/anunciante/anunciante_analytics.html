@@ -1,6 +1,24 @@
 {% extends "painel/base_painel.html" %}
+
 {% block title %}Análise de Desempenho{% endblock %}
+
 {% block content %}
     <h2>Analytics & Relatórios</h2>
-    <p>Em construção.</p>
+    <p>Utilize esta área para extrair dados e analisar a performance de suas vendas.</p>
+    
+    <hr>
+    
+    <h3>Exportar Dados</h3>
+    <ul class="dashboard-list">
+        <li>
+            <a href="{% url 'anunciante_exportar_reservas_csv' %}">
+                Exportar Relatório Completo de Reservas (.csv)
+            </a>
+        </li>
+    </ul>
+
+    <hr>
+
+    <h3>Gráficos de Desempenho</h3>
+    <p>(Em breve, aqui teremos gráficos interativos sobre VGV, funil de vendas e performance de parceiros).</p>
 {% endblock %}

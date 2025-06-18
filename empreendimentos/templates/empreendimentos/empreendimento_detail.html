@@ -1,106 +1,96 @@
-{% extends "painel/base_painel.html" %} {% block title %}{{ empreendimento.nome }}{% endblock %}
+{% extends "core/base_publica.html" %}
+{% load static %}
+
+{% block title %}{{ empreendimento.nome }}{% endblock %}
 
 {% block content %}
-    <h1>{{ empreendimento.nome }}</h1>
-    <p><strong>Status:</strong> {{ empreendimento.get_status_empreendimento_display }}</p>
 
-    {% if messages %}
-        <ul class="messages" style="background-color: lightgreen; padding: 10px;">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <hr>
-    
-    {% if user.is_authenticated and user.perfil == 'corretor' %}
-    <div class="corretor-actions" style="background-color: #f2f4f8; padding: 15px; margin-bottom: 20px;">
-        <h4>Ferramentas do Corretor</h4>
-        <div id="link-container" style="display: none; margin-top: 10px;">
-            <input type="text" id="link-gerado" readonly style="width: 70%; padding: 8px;">
-            <button type="button" onclick="copiarLink()">Copiar</button>
+<section class="secao-titulo">
+    <div class="secao-titulo-container">
+        <div class="conteudo-esquerdo">
+            <div class="localizacao">{{ empreendimento.cidade }}, {{ empreendimento.estado }}</div>
+            <div class="titulo-container">
+                <h1 class="titulo-principal">{{ empreendimento.nome }}</h1>
+                <div class="flag-lancamento">
+                    <span class="lancamento">{{ empreendimento.get_status_empreendimento_display }}</span>
+                </div>
+            </div>
         </div>
-        <button type="button" onclick="gerarLinkApresentacao(this)">Gerar Link de Apresentação</button>
+        <div class="conteudo-direito">
+            {% with primeira_unidade=empreendimento.unidades.all.first %}
+            <div class="preco-label">Unidades a partir de</div>
+            <div class="preco-valor">R$ {{ primeira_unidade.valor_total|default:"--" }}</div>
+            {% endwith %}
+        </div>
     </div>
-    <hr>
-    {% endif %}
+</section>
 
-    <h3>Descrição</h3>
-    <p>{{ empreendimento.descricao_curta }}</p>
-    <hr>
-
-    <h3>Unidades</h3>
-    {% for unidade in empreendimento.unidades.all %}
-        <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
-            <p>
-                <strong>Tipo:</strong> {{ unidade.get_tipo_display }} | 
-                <strong>Metragem:</strong> {{ unidade.metragem }}m² |
-                <strong>Status:</strong> {{ unidade.get_status_display }}
-            </p>
-            
-            {% if unidade.status == 'disponivel' %}
-                {% if user.is_authenticated and user.perfil == 'corretor' %}
-                    <details>
-                        <summary><strong>Realizar Reserva Direta para Cliente</strong></summary>
-                        <form action="{% url 'reservas:reserva_direta_corretor' unidade.id %}" method="post" style="margin-top: 10px;">
-                            {% csrf_token %}
-                            <input type="text" name="nome_cliente" placeholder="Nome completo do cliente" required><br>
-                            <input type="text" name="cpf_cliente" placeholder="CPF do cliente" required><br>
-                            <input type="email" name="email_cliente" placeholder="E-mail do cliente" required><br>
-                            <input type="text" name="whatsapp_cliente" placeholder="WhatsApp do cliente" required><br>
-                            <button type="submit">Reservar Unidade</button>
-                        </form>
-                    </details>
-                {% else %}
-                    <details>
-                        <summary><strong>Tenho Interesse!</strong></summary>
-                        <form action="{% url 'reservas:solicitar_reserva' unidade.id %}" method="post" style="margin-top: 10px;">
-                            {% csrf_token %}
-
-                             {% if ref_corretor %}
-                                <input type="hidden" name="ref_username" value="{{ ref_corretor }}">
-                            {% endif %} 
-
-                            <input type="text" name="nome_cliente" placeholder="Seu nome completo" required><br>
-                            <input type="text" name="whatsapp_cliente" placeholder="Seu WhatsApp" required><br>
-                            <input type="email" name="email_cliente" placeholder="Seu e-mail"><br>
-                            <input type="text" name="cpf_cliente" placeholder="Seu CPF (opcional)"><br>
-                            <button type="submit">Enviar Solicitação</button>
-                        </form>
-                    </details>
-                {% endif %}
-            {% else %}
-                <p><em>Esta unidade não está disponível para reserva.</em></p>
-            {% endif %}
+<section class="carousel-section">
+    <div class="carousel-container">
+        <button class="carousel-nav prev" aria-label="Imagem anterior">&lt;</button>
+        <div class="carousel" tabindex="0" aria-roledescription="carousel">
+            {% for imagem in empreendimento.imagens_galeria.all %}
+                <img src="{{ imagem.arquivo.url }}" alt="{{ imagem.legenda|default:empreendimento.nome }}" />
+            {% empty %}
+                <img src="https://via.placeholder.com/600x400/?text=Sem+Fotos" alt="Sem Fotos" />
+            {% endfor %}
         </div>
-    {% empty %}
-        <p>Nenhuma unidade cadastrada para este empreendimento.</p>
-    {% endfor %}
+        <button class="carousel-nav next" aria-label="Próxima imagem">&gt;</button>
+    </div>
+</section>
 
-    <script>
-        function gerarLinkApresentacao(botao) {
-            const urlSemQuery = window.location.protocol + "//" + window.location.host + window.location.pathname;
-            const linkDeApresentacao = `${urlSemQuery}?ref={{ user.username }}`;
-            
-            // Mostra o container com o link
-            const linkContainer = document.getElementById('link-container');
-            const inputLink = document.getElementById('link-gerado');
-            
-            inputLink.value = linkDeApresentacao;
-            linkContainer.style.display = 'block';
-            botao.style.display = 'none'; // Esconde o botão original
-        }
+<section class="secao-midias">
+    <div class="secao-midias-container">
+      <div class="midias-botoes-wrapper">
+        {% if empreendimento.imagens_galeria.all %}
+        <button class="btn-midia" data-modal-type="fotos">
+            <span class="material-symbols-outlined btn-midia-icon-img">image</span>
+            <span class="btn-midia-texto">Fotos</span>
+        </button>
+        {% endif %}
+        {% for video in empreendimento.videos.all %}
+        <button class="btn-midia" data-modal-type="video" data-url="{{ video.url_video }}">
+            <span class="material-symbols-outlined btn-midia-icon-img">play_circle</span>
+            <span class="btn-midia-texto">Vídeo</span>
+        </button>
+        {% endfor %}
+        </div>
+    </div>
+</section>
 
-        function copiarLink() {
-            const inputLink = document.getElementById('link-gerado');
-            inputLink.select(); // Seleciona o texto do input
-            inputLink.setSelectionRange(0, 99999); // Para mobile
-            
-            navigator.clipboard.writeText(inputLink.value).then(function() {
-                alert('Link copiado para a área de transferência!');
-            });
-        }
-    </script>
+
+<section class="secao-tipos-unidades">
+    <div class="tipos-unidades-container-titulo">
+        <h2 class="tipos-unidades-titulo">Tipos & Unidades</h2>
+        <p class="tipos-unidades-subtitulo">{{ empreendimento.descricao_curta }}</p>
+    </div>
+
+    <div class="tipos-unidades-carrossel-wrapper">
+        <div class="tipos-unidades-carrossel">
+            {% for unidade_tipo in empreendimento.unidades.all %}
+                <div class="card-unidade" data-id="unidade-{{ unidade_tipo.id }}">
+                    <div class="card-unidade-conteudo">
+                        <span class="card-unidade-tipo">{{ unidade_tipo.get_tipo_display|upper }}</span>
+                        <h3 class="card-unidade-area">{{ unidade_tipo.metragem }}m²</h3>
+                        <div class="card-unidade-amenidades">
+                            <span class="amenidade-item">
+                                <span class="material-symbols-outlined amenidade-icone">king_bed</span>
+                                <span class="amenidade-texto">{{ unidade_tipo.quartos }}</span>
+                            </span>
+                            <span class="amenidade-item">
+                                <span class="material-symbols-outlined amenidade-icone">shower</span>
+                                <span class="amenidade-texto">{{ unidade_tipo.banheiros }}</span>
+                            </span>
+                            <span class="amenidade-item">
+                                <span class="material-symbols-outlined amenidade-icone">directions_car</span>
+                                <span class="amenidade-texto">{{ unidade_tipo.vagas }}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 
 {% endblock %}

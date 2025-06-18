@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Meu Imóvel Online{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base_estilos.css' %}">
+</head>
+<body>
+    <header class="header-main">
+        <div class="logo">MeuImovel.Online</div>
+        <nav>
+            <a href="{% url 'empreendimentos:list' %}" style="margin-right: 20px;">Empreendimentos</a>
+            <a href="{% url 'login' %}" class="nav-link">Área Restrita</a>
+        </nav>
+    </header>
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
